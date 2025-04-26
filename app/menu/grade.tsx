@@ -11,10 +11,18 @@ interface Assignment {
   maxGrade: number;
 }
 
+interface Exam {
+  id: string;
+  name: string;
+  grade: number;
+  maxGrade: number;
+}
+
 interface SubjectGrades {
   subject: string;
   attendancePercentage: number;
   assignments: Assignment[];
+  exams: Exam[];
 }
 
 const gradesData: SubjectGrades[] = [
@@ -26,6 +34,10 @@ const gradesData: SubjectGrades[] = [
       { id: '2', type: 'Бие даалт', title: 'Модуль 1', grade: 85, maxGrade: 100 },
       { id: '3', type: 'Лаборатори', title: 'Бүлэг 2', grade: 92, maxGrade: 100 },
     ],
+    exams: [
+      { id: '101', name: '1-р улирлын шалгалт', grade: 88, maxGrade: 100 },
+      { id: '102', name: 'Эцсийн шалгалт', grade: 95, maxGrade: 100 },
+    ],
   },
   {
     subject: 'Алгоритм',
@@ -33,6 +45,9 @@ const gradesData: SubjectGrades[] = [
     assignments: [
       { id: '4', type: 'Лаборатори', title: 'Бүлэг 1', grade: 78, maxGrade: 100 },
       { id: '5', type: 'Бие даалт', title: 'Модуль 1', grade: 92, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '201', name: 'Эцсийн шалгалт', grade: 92, maxGrade: 100 },
     ],
   },
   {
@@ -44,6 +59,10 @@ const gradesData: SubjectGrades[] = [
       { id: '8', type: 'Лаборатори', title: 'Бүлэг 2', grade: 80, maxGrade: 100 },
       { id: '9', type: 'Бие даалт', title: 'Модуль 2', grade: 90, maxGrade: 100 },
     ],
+    exams: [
+      { id: '301', name: 'Явцын шалгалт', grade: 78, maxGrade: 100 },
+      { id: '302', name: 'Эцсийн шалгалт', grade: 85, maxGrade: 100 },
+    ],
   },
   {
     subject: 'Веб хөгжүүлэлт',
@@ -51,6 +70,9 @@ const gradesData: SubjectGrades[] = [
     assignments: [
       { id: '10', type: 'Лаборатори', title: 'Бүлэг 1', grade: 65, maxGrade: 100 },
       { id: '11', type: 'Бие даалт', title: 'Төсөл 1', grade: 75, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '401', name: 'Эцсийн шалгалт', grade: 70, maxGrade: 100 },
     ],
   },
   {
@@ -61,6 +83,10 @@ const gradesData: SubjectGrades[] = [
       { id: '13', type: 'Бие даалт', title: 'Төсөл 1', grade: 88, maxGrade: 100 },
       { id: '14', type: 'Лаборатори', title: 'Бүлэг 2', grade: 92, maxGrade: 100 },
     ],
+    exams: [
+      { id: '501', name: '1-р сэдвийн шалгалт', grade: 85, maxGrade: 100 },
+      { id: '502', name: 'Эцсийн шалгалт', grade: 90, maxGrade: 100 },
+    ],
   },
   {
     subject: 'Компьютерийн сүлжээ',
@@ -69,6 +95,9 @@ const gradesData: SubjectGrades[] = [
       { id: '15', type: 'Лаборатори', title: 'Сүлжээний үндэс', grade: 80, maxGrade: 100 },
       { id: '16', type: 'Бие даалт', title: 'Сүлжээний төсөл', grade: 70, maxGrade: 100 },
     ],
+    exams: [
+      { id: '601', name: 'Эцсийн шалгалт', grade: 75, maxGrade: 100 },
+    ],
   },
   {
     subject: 'Хиймэл оюун ухаан',
@@ -76,6 +105,9 @@ const gradesData: SubjectGrades[] = [
     assignments: [
       { id: '17', type: 'Лаборатори', title: 'Нейрон сүлжээ', grade: 95, maxGrade: 100 },
       { id: '18', type: 'Бие даалт', title: 'Машин сургалт', grade: 85, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '701', name: 'Эцсийн шалгалт', grade: 90, maxGrade: 100 },
     ],
   },
 ];
@@ -87,13 +119,34 @@ interface SubjectItemProps {
 
 const SubjectItem: React.FC<SubjectItemProps> = ({ item, onPress }) => {
   const totalPercentage = useMemo(() => {
-    if (item.assignments.length === 0) {
-      return '0%';
+    let assignmentWeight = 0.3;
+    let labWeight = 0.3;
+    let examWeight = 0.3;
+    const attendanceWeight = 0.1;
+
+    let totalAssignmentScore = 0;
+    let totalLabScore = 0;
+    let totalExamScore = 0;
+
+    const assignmentGrades = item.assignments.filter(a => a.type === 'Бие даалт').map(a => a.grade / a.maxGrade);
+    const labGrades = item.assignments.filter(a => a.type === 'Лаборатори').map(a => a.grade / a.maxGrade);
+    const examGrades = item.exams.map(e => e.grade / e.maxGrade);
+
+    if (assignmentGrades.length > 0) {
+      totalAssignmentScore = assignmentGrades.reduce((sum, grade) => sum + grade, 0) / assignmentGrades.length;
     }
-    const totalGrade = item.assignments.reduce((sum, assignment) => sum + assignment.grade, 0);
-    const totalMaxGrade = item.assignments.reduce((sum, assignment) => sum + assignment.maxGrade, 0);
-    return totalMaxGrade > 0 ? ((totalGrade / totalMaxGrade) * 100).toFixed(2) + '%' : '0%';
-  }, [item.assignments]);
+    if (labGrades.length > 0) {
+      totalLabScore = labGrades.reduce((sum, grade) => sum + grade, 0) / labGrades.length;
+    }
+    if (examGrades.length > 0) {
+      totalExamScore = examGrades.reduce((sum, grade) => sum + grade, 0) / examGrades.length;
+    }
+
+    const attendanceScore = item.attendancePercentage / 100;
+    const finalScore = (attendanceScore * attendanceWeight) + (totalAssignmentScore * assignmentWeight) + (totalLabScore * labWeight) + (totalExamScore * examWeight);
+
+    return (finalScore * 100).toFixed(2) + '%';
+  }, [item]);
 
   return (
     <TouchableOpacity style={styles.subjectItem} onPress={() => onPress(item)}>
@@ -114,6 +167,17 @@ const AssignmentItem: React.FC<AssignmentItemProps> = ({ item }) => (
   </View>
 );
 
+interface ExamItemProps {
+  item: Exam;
+}
+
+const ExamItem: React.FC<ExamItemProps> = ({ item }) => (
+  <View style={modalStyles.examItem}>
+    <Text>{item.name}</Text>
+    <Text>Дүн: {item.grade}/{item.maxGrade}</Text>
+  </View>
+);
+
 export default function SubjectDetailsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSubjectData, setSelectedSubjectData] = useState<SubjectGrades | null>(null);
@@ -128,6 +192,40 @@ export default function SubjectDetailsScreen() {
     setSelectedSubjectData(null);
   };
 
+  const calculateFinalGrade = (subjectData: SubjectGrades | null): string => {
+    if (!subjectData) {
+      return '0%';
+    }
+
+    let assignmentWeight = 0.3;
+    let labWeight = 0.3;
+    let examWeight = 0.3;
+    const attendanceWeight = 0.1;
+
+    let totalAssignmentScore = 0;
+    let totalLabScore = 0;
+    let totalExamScore = 0;
+
+    const assignmentGrades = subjectData.assignments.filter(a => a.type === 'Бие даалт').map(a => a.grade / a.maxGrade);
+    const labGrades = subjectData.assignments.filter(a => a.type === 'Лаборатори').map(a => a.grade / a.maxGrade);
+    const examGrades = subjectData.exams.map(e => e.grade / e.maxGrade);
+
+    if (assignmentGrades.length > 0) {
+      totalAssignmentScore = assignmentGrades.reduce((sum, grade) => sum + grade, 0) / assignmentGrades.length;
+    }
+    if (labGrades.length > 0) {
+      totalLabScore = labGrades.reduce((sum, grade) => sum + grade, 0) / labGrades.length;
+    }
+    if (examGrades.length > 0) {
+      totalExamScore = examGrades.reduce((sum, grade) => sum + grade, 0) / examGrades.length;
+    }
+
+    const attendanceScore = subjectData.attendancePercentage / 100;
+    const finalScore = (attendanceScore * attendanceWeight) + (totalAssignmentScore * assignmentWeight) + (totalLabScore * labWeight) + (totalExamScore * examWeight);
+
+    return (finalScore * 100).toFixed(2) + '%';
+  };
+
   const generatePrintHTML = (data: SubjectGrades[]): string => {
     let html = `
       <html>
@@ -137,9 +235,10 @@ export default function SubjectDetailsScreen() {
             h1 { text-align: center; }
             h2 { margin-top: 20px; }
             .subject-info { margin-bottom: 10px; }
-            .assignment-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-            .assignment-table th, .assignment-table td { border: 1px solid black; padding: 8px; text-align: left; }
-            .assignment-table th { background-color: #f2f2f2; }
+            .assignment-table, .exam-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            .assignment-table th, .assignment-table td, .exam-table th, .exam-table td { border: 1px solid black; padding: 8px; text-align: left; }
+            .assignment-table th, .exam-table th { background-color: #f2f2f2; }
+            .final-grade { font-weight: bold; margin-top: 10px; }
           </style>
         </head>
         <body>
@@ -147,16 +246,55 @@ export default function SubjectDetailsScreen() {
     `;
 
     data.forEach(subject => {
-      const totalGrade = subject.assignments.reduce((sum, assignment) => sum + assignment.grade, 0);
-      const totalMaxGrade = subject.assignments.reduce((sum, assignment) => sum + assignment.maxGrade, 0);
-      const percentage = totalMaxGrade > 0 ? ((totalGrade / totalMaxGrade) * 100).toFixed(2) + '%' : '0%';
+      let totalAssignmentScore = 0;
+      let totalLabScore = 0;
+      let totalExamScore = 0;
+
+      const assignmentGrades = subject.assignments.filter(a => a.type === 'Бие даалт').map(a => a.grade / a.maxGrade);
+      const labGrades = subject.assignments.filter(a => a.type === 'Лаборатори').map(a => a.grade / a.maxGrade);
+      const examGrades = subject.exams.map(e => e.grade / e.maxGrade);
+
+      if (assignmentGrades.length > 0) {
+        totalAssignmentScore = assignmentGrades.reduce((sum, grade) => sum + grade, 0) / assignmentGrades.length;
+      }
+      if (labGrades.length > 0) {
+        totalLabScore = labGrades.reduce((sum, grade) => sum + grade, 0) / labGrades.length;
+      }
+      if (examGrades.length > 0) {
+        totalExamScore = examGrades.reduce((sum, grade) => sum + grade, 0) / examGrades.length;
+      }
+
+      const attendanceScore = subject.attendancePercentage / 100;
+      const finalScore = (attendanceScore * 0.1) + (totalAssignmentScore * 0.3) + (totalLabScore * 0.3) + (totalExamScore * 0.3);
+      const finalPercentage = (finalScore * 100).toFixed(2) + '%';
 
       html += `
         <h2>${subject.subject}</h2>
         <div class="subject-info">
-          <p><strong>Нийт дүн:</strong> ${percentage} (${totalGrade}/${totalMaxGrade})</p>
           <p><strong>Ирц:</strong> ${subject.attendancePercentage}%</p>
+          <p class="final-grade"><strong>Нийт дүн:</strong> ${finalPercentage}</p>
         </div>
+        <h3>Шалгалтууд:</h3>
+        <table class="exam-table">
+          <thead>
+            <tr>
+              <th>Нэр</th>
+              <th>Дүн</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      subject.exams.forEach(exam => {
+        html += `
+            <tr>
+              <td><span class="math-inline">${exam.name}</td\>
+<td\></span>${exam.grade}/${exam.maxGrade}</td>
+            </tr>
+        `;
+      });
+      html += `
+          </tbody>
+        </table>
         <h3>Даалгаврууд:</h3>
         <table class="assignment-table">
           <thead>
@@ -171,9 +309,9 @@ export default function SubjectDetailsScreen() {
       subject.assignments.forEach(assignment => {
         html += `
             <tr>
-              <td>${assignment.type}</td>
-              <td>${assignment.title}</td>
-              <td>${assignment.grade}/${assignment.maxGrade}</td>
+              <td><span class="math-inline">${assignment.type}</td\>
+<td\></span>${assignment.title}</td>
+              <td><span class="math-inline">${assignment.grade}/</span>${assignment.maxGrade}</td>
             </tr>
         `;
       });
@@ -224,6 +362,13 @@ export default function SubjectDetailsScreen() {
               <>
                 <Text style={modalStyles.modalTitle}>{selectedSubjectData.subject}</Text>
                 <Text style={modalStyles.attendance}>Ирц: {selectedSubjectData.attendancePercentage}%</Text>
+                <Text style={modalStyles.finalGrade}>Нийт дүн: {calculateFinalGrade(selectedSubjectData)}</Text>
+                <Text style={modalStyles.subtitle}>Шалгалтууд:</Text>
+                <FlatList
+                  data={selectedSubjectData.exams}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => <ExamItem item={item} />}
+                />
                 <Text style={modalStyles.subtitle}>Лабораторийн болон Бие Даалтын Дүн:</Text>
                 <FlatList
                   data={selectedSubjectData.assignments}
@@ -258,14 +403,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    flex:1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   subjectTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   totalGradeText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#822321',
     fontWeight: 'bold',
   },
@@ -301,6 +449,12 @@ const modalStyles = StyleSheet.create({
     color: '#822321',
     fontWeight: 'bold',
   },
+  finalGrade: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: 'green',
+  },
   subtitle: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -312,6 +466,12 @@ const modalStyles = StyleSheet.create({
     paddingLeft: 10,
     borderLeftWidth: 2,
     borderLeftColor: '#822321',
+  },
+  examItem: {
+    marginBottom: 8,
+    paddingLeft: 10,
+    borderLeftWidth: 2,
+    borderLeftColor: 'blue',
   },
   button: {
     borderRadius: 20,

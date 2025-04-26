@@ -26,11 +26,11 @@ const menuItems: { id: string; name: string; icon: keyof typeof Ionicons.glyphMa
   { id: "1", name: "Хяналтын самбар", icon: "home-outline",path:"/home" },
   { id: "2", name: "Даалгавар", icon: "book-outline",path:"/menu/homework" },
   { id: "3", name: "Ирцийн мэдээлэл", icon: "calendar-outline",path:"/menu/attendance" },
-  { id: "4", name: "Төлбөрийн мэдээлэл", icon: "cash-outline",path:"/home" },
-  { id: "5", name: "Шалгалт", icon: "clipboard-outline" ,path:"/home"},
+  { id: "4", name: "Төлбөрийн мэдээлэл", icon: "cash-outline",path:"/menu/fee" },
+  { id: "5", name: "Шалгалт", icon: "clipboard-outline" ,path:"/menu/exam"},
   { id: "6", name: "Дүнгийн хуудас", icon: "document-text-outline",path:"/menu/grade" },
-  { id: "7", name: "Календарь", icon: "calendar-number-outline",path:"/home" },
-  { id: "8", name: "Мэдэгдлийн самбар", icon: "notifications-outline",path:"/home" },
+  { id: "7", name: "Календарь", icon: "calendar-number-outline",path:"/menu/calendar" },
+  { id: "8", name: "Мэдэгдлийн самбар", icon: "notifications-outline",path:"/menu/notice" },
   { id: "9", name: "Хувийн мэдээлэл", icon: "person-outline",path:"/menu/profile" }
 ];
 

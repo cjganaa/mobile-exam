@@ -1,9 +1,27 @@
 import { Link, Stack } from 'expo-router';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import React, { useState } from "react";
-import Fontisto from '@expo/vector-icons/Fontisto';
-import { ProgressBar } from "react-native-paper";
+import { Fontisto } from '@expo/vector-icons';
 
+export function ProfileCard(props:any) {
+  return (
+    <View style={header.card}>
+        <View style={header.iconContainer}>
+          <Link href={"/menu"}><Fontisto name="nav-icon-grid-a" size={24} color="white" /></Link>
+        </View>
+        <View style={header.textContainer}>
+          <Text style={header.name}>Болд-Эрдэнэ Ган-Эрдэнэ</Text>
+          <Text style={header.className}>se401</Text>
+        </View>
+        <View style={header.imageWrapper}>
+          <Image
+            source={require('../../assets/images/profile.jpg')} // Replace with actual image URL
+            style={header.profileImage}
+          />
+        </View>
+      </View>
+  );
+}
 
 const notices = [
   { "id": "1", "title": "Дараагийн сард сургуулийн амралт эхэлнэ", "date": "2025-03-02", "image": "" },
@@ -28,31 +46,13 @@ const attendanceData = [
   { "id": "10", "subject": "Хиймэл оюун ухаан", "present": 75, "absent": 15, "leave": 10 }
 ];
 
-export function ProfileCard(props:any) {
-  return (
-    <View style={header.card}>
-      <View style={header.iconContainer}>
-        <Link href={"../menu"}><Fontisto name="nav-icon-grid-a" size={24} color="white" /></Link>
-      </View>
-      <View style={header.textContainer}>
-        <Text style={header.name}>Болд-Эрдэнэ Ган-Эрдэнэ</Text>
-        <Text style={header.className}>se401</Text>
-      </View>
-      <View style={header.imageWrapper}>
-        <Image
-          source={require('../../assets/images/profile.jpg')} // Replace with actual image URL
-          style={header.profileImage}
-        />
-      </View>
-    </View>
-  );
-}
-
 const header = StyleSheet.create({
   card: {
+    width: "100%",
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#822321"
   },
   iconContainer: {
     width: 40,
@@ -102,18 +102,9 @@ export default function Home() {
     const [homework, setHomework] = useState<Attendance[]>(attendanceData);
     return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: 'My home',
-          headerStyle: { backgroundColor: '#822321' },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerTitle: props => <ProfileCard {...props} />,
-        }}
-      />
+      <ProfileCard/>
       <Text style={styles.sectionTitle}>Мэдэгдэл</Text>
+      <View style={styles.innerContainer}>
       <FlatList
         style={{
             minHeight:180
@@ -130,7 +121,7 @@ export default function Home() {
           </View>
         )}
       />
-      <Link href={'/home/homework'} style={{margin:10}}><Text style={styles.sectionTitle}>Ирцийн мэдээлэл</Text></Link>
+      <Link href={'/menu'} style={{margin:10}}><Text style={styles.sectionTitle}>Ирцийн мэдээлэл</Text></Link>
       
       <FlatList
         data={homework}
@@ -138,23 +129,31 @@ export default function Home() {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.homeworkCard}>
             <View style={styles.homeworkTextContainer}>
-              <Text style={[styles.homeworkText]}>{item.subject}</Text>
-              <View style={{ width: 300, height: 10, backgroundColor: "#ddd", borderRadius: 5,flex:1,flexDirection:"row",overflow:'hidden' }}>
-                <View style={{ width: `${item.present}%`, height: "100%", backgroundColor: "#00ce90"}} />
-                <View style={{ width: `${item.leave}%`, height: "100%", backgroundColor: "#d4f5ff"}} />
-                <View style={{ width: `${item.absent}%`, height: "100%", backgroundColor: "#fe4f66"}} />
-                
+              <View style={{flex:1, flexDirection:'row',justifyContent:'space-between',alignItems:'center', width:280}}>
+                <Text style={[styles.homeworkText]}>{item.subject}</Text>
+                <Text>Багш</Text>
               </View>
+              <View style={{flex:1, flexDirection:'row',gap:10,alignItems:'center', width:280}}>
+                <Text>Ирц</Text>
+                <View style={{ width: 200, height: 10, backgroundColor: "#ddd", borderRadius: 5,flex:1,flexDirection:"row",overflow:'hidden' }}>
+                  <View style={{ width: `${item.present}%`, height: "100%", backgroundColor: "#00ce90"}} />
+                  <View style={{ width: `${item.leave}%`, height: "100%", backgroundColor: "#d4f5ff"}} />
+                  <View style={{ width: `${item.absent}%`, height: "100%", backgroundColor: "#fe4f66"}} />
+                </View>
+              </View>
+              
             </View>
           </TouchableOpacity>
         )}
       />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "white", padding: 16 },
+    container: { flex: 1, backgroundColor: "white"},
+    innerContainer:{ flex: 1, padding:16},
     sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#822321", margin: 8 },
     
     // Notice Board Styles

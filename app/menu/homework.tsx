@@ -8,7 +8,7 @@ export default function Homework() {
   return (
     <View style={styles.container}>
         <Stack.Screen options={{
-            title:"Homework"
+            title:"Гэрийн даалгавар"
         }}/>
       <Text>
         Update the title

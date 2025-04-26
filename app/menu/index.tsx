@@ -1,38 +1,13 @@
 import React from "react";
 import { Link } from "expo-router";
 import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import { Stack } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons} from "@expo/vector-icons";
 
-const menuItems: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { id: "1", name: "Хяналтын самбар", icon: "home-outline" },
-  { id: "2", name: "Гэрийн даалгавар", icon: "book-outline" },
-  { id: "3", name: "Ирцийн мэдээлэл", icon: "calendar-outline" },
-  { id: "4", name: "Төлбөрийн мэдээлэл", icon: "cash-outline" },
-  { id: "5", name: "Шалгалт", icon: "clipboard-outline" },
-  { id: "6", name: "Дүнгийн хуудас", icon: "document-text-outline" },
-  { id: "7", name: "Календарь", icon: "calendar-number-outline" },
-  { id: "8", name: "Мэдэгдлийн самбар", icon: "notifications-outline" },
-  { id: "9", name: "Хувийн мэдээлэл", icon: "person-outline" }
-];
-
-
-const MenuScreen = () => {
-  const navigation = useNavigation();
-
-  const renderItem = ({ item }: { item: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap } }) => (
-    <Link href={"/home"} style={styles.menuItem}>
-      <View style={styles.menuIcon}>
-        <Ionicons name={item.icon} size={30} color="#822321" />
-      </View>
-      <Text style={styles.menuText}>{item.name}</Text>
-    </Link>
-  );
-
+export function ProfileCard(props:any) {
   return (
-    <View style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
+    <View style={styles.header}>
         <View style={styles.profileContainer}>
           <Image
             source={require('../../assets/images/profile.jpg')}
@@ -43,10 +18,49 @@ const MenuScreen = () => {
             <Text style={styles.userClass}>se401</Text>
           </View>
         </View>
-        <Link href={'/home'}>
-          <Ionicons name="close" size={28} color="white" />
-        </Link>
       </View>
+  );
+}
+
+const menuItems: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap; path:string }[] = [
+  { id: "1", name: "Хяналтын самбар", icon: "home-outline",path:"/home" },
+  { id: "2", name: "Гэрийн даалгавар", icon: "book-outline",path:"/menu/homework" },
+  { id: "3", name: "Ирцийн мэдээлэл", icon: "calendar-outline",path:"/menu/attendance" },
+  { id: "4", name: "Төлбөрийн мэдээлэл", icon: "cash-outline",path:"/home" },
+  { id: "5", name: "Шалгалт", icon: "clipboard-outline" ,path:"/home"},
+  { id: "6", name: "Дүнгийн хуудас", icon: "document-text-outline",path:"/home" },
+  { id: "7", name: "Календарь", icon: "calendar-number-outline",path:"/home" },
+  { id: "8", name: "Мэдэгдлийн самбар", icon: "notifications-outline",path:"/home" },
+  { id: "9", name: "Хувийн мэдээлэл", icon: "person-outline",path:"/home" }
+];
+
+
+const MenuScreen = () => {
+  const navigation = useNavigation();
+
+  const renderItem = ({ item }: { item: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap; path:string }}) => (
+    <Link href={item.path as any} style={styles.menuItem}>
+      <View style={styles.menuIcon}>
+        <Ionicons name={item.icon} size={30} color="#822321" />
+      </View>
+      <Text style={styles.menuText}>{item.name}</Text>
+    </Link>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Stack.Screen
+              options={{
+                title: 'menu',
+                headerStyle: { backgroundColor: '#822321' },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+                headerTitle: props => <ProfileCard {...props} />,
+              }}
+            />
+      
 
       <FlatList
         data={menuItems}
@@ -74,6 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 20,
+    marginTop:20
   },
   profileContainer: {
     flexDirection: "row",

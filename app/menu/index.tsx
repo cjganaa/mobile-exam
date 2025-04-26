@@ -24,19 +24,18 @@ export function ProfileCard(props:any) {
 
 const menuItems: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap; path:string }[] = [
   { id: "1", name: "Хяналтын самбар", icon: "home-outline",path:"/home" },
-  { id: "2", name: "Гэрийн даалгавар", icon: "book-outline",path:"/menu/homework" },
+  { id: "2", name: "Даалгавар", icon: "book-outline",path:"/menu/homework" },
   { id: "3", name: "Ирцийн мэдээлэл", icon: "calendar-outline",path:"/menu/attendance" },
   { id: "4", name: "Төлбөрийн мэдээлэл", icon: "cash-outline",path:"/home" },
   { id: "5", name: "Шалгалт", icon: "clipboard-outline" ,path:"/home"},
-  { id: "6", name: "Дүнгийн хуудас", icon: "document-text-outline",path:"/home" },
+  { id: "6", name: "Дүнгийн хуудас", icon: "document-text-outline",path:"/menu/grade" },
   { id: "7", name: "Календарь", icon: "calendar-number-outline",path:"/home" },
   { id: "8", name: "Мэдэгдлийн самбар", icon: "notifications-outline",path:"/home" },
-  { id: "9", name: "Хувийн мэдээлэл", icon: "person-outline",path:"/home" }
+  { id: "9", name: "Хувийн мэдээлэл", icon: "person-outline",path:"/menu/profile" }
 ];
 
 
 const MenuScreen = () => {
-  const navigation = useNavigation();
 
   const renderItem = ({ item }: { item: { id: string; name: string; icon: keyof typeof Ionicons.glyphMap; path:string }}) => (
     <Link href={item.path as any} style={styles.menuItem}>

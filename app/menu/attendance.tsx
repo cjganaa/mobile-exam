@@ -82,7 +82,7 @@ const LectureScreen: React.FC = () => {
 
   return (
     <ScrollView style={[styles.scene, { backgroundColor: 'white' }]}>
-      <Text style={styles.headerText}>Лекцийн Ирц</Text>
+      <Text style={styles.headerText}>Лекцийн ирц</Text>
       <ColorExplanation />
       {lectureAttendanceData.map((item, index) => (
         <AttendanceItem key={index} item={item} onPress={handleItemPress} />
@@ -150,7 +150,7 @@ const LabScreen: React.FC = () => {
 
   return (
     <ScrollView style={[styles.scene, { backgroundColor: 'white' }]}>
-      <Text style={styles.headerText}>Лабораторийн Ирц</Text>
+      <Text style={styles.headerText}>Лабораторийн ирц</Text>
       <ColorExplanation />
       {labAttendanceData.map((item, index) => (
         <AttendanceItem key={index} item={item} onPress={handleItemPress} />

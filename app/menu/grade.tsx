@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { Stack} from 'expo-router';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import * as Print from 'expo-print';

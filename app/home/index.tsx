@@ -1,264 +1,212 @@
-import { Link, Stack } from 'expo-router';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+// app/index.tsx
+import { View, StyleSheet } from 'react-native';
 import React, { useState } from "react";
-import { Fontisto } from '@expo/vector-icons';
-
-export function ProfileCard(props:any) {
-  return (
-    <View style={header.card}>
-        <View style={header.iconContainer}>
-          <Link href={"/menu"}><Fontisto name="nav-icon-grid-a" size={24} color="white" /></Link>
-        </View>
-        <View style={header.textContainer}>
-          <Text style={header.name}>Болд-Эрдэнэ Ган-Эрдэнэ</Text>
-          <Text style={header.className}>se401</Text>
-        </View>
-        <View style={header.imageWrapper}>
-          <Image
-            source={require('../../assets/images/profile.jpg')} // Replace with actual image URL
-            style={header.profileImage}
-          />
-        </View>
-      </View>
-  );
+import { ProfileCard } from './components/ProfileCard';
+import { NoticeBoard } from './components/NoticeBoard';
+import { AttendanceList } from './components/AttendanceList';
+interface Assignment {
+  id: string;
+  type: 'Лаборатори' | 'Бие даалт';
+  title: string;
+  grade: number;
+  maxGrade: number;
 }
 
-const notices = [
-  { "id": "1", "title": "Дараагийн сард сургуулийн амралт эхэлнэ", "date": "2025-03-02", "image": "" },
-  { "id": "2", "title": "Зуны номын үзэсгэлэн 6-р сард болно", "date": "2025-03-02", "image": "" },
-  { "id": "3", "title": "Програм хангамжийн инженерчлэлийн семинар болно", "date": "2025-03-05", "image": "" },
-  { "id": "4", "title": "Хакатон тэмцээн зохион байгуулагдана", "date": "2025-03-10", "image": "" },
-  { "id": "5", "title": "Компьютерийн сүлжээний практик сургалт", "date": "2025-03-15", "image": "" },
-  { "id": "6", "title": "Ажлын байрны өдөрлөг: Програм хангамжийн чиглэл", "date": "2025-03-18", "image": "" },
-  { "id": "7", "title": "Оюутнуудын бүтээлийн үзэсгэлэн гарна", "date": "2025-03-20", "image": "" }
-];
+interface Exam {
+  id: string;
+  name: string;
+  grade: number;
+  maxGrade: number;
+}
 
-type Attendance = {
+export interface SubjectGrades { // Export хийх
+  subject: string;
+  attendancePercentage: number;
+  assignments: Assignment[];
+  exams: Exam[];
+}
+
+export interface Attendance {
   id: string;
   subject: string;
-  present: number;
-  absent: number;
-  leave: number;
+  type: 'Лекц' | 'Лаб';
+  lessonNumber: number; // Нэмэлт талбар
+  present: boolean;
   teacher: string;
-};
+}
 
 const attendanceData: Attendance[] = [
-  { "id": "1", "subject": "Мобайл хөгжүүлэлт", "present": 80, "absent": 15, "leave": 5, "teacher": "Батсайхан" },
-  { "id": "2", "subject": "Програмчлалын үндэс", "present": 90, "absent": 5, "leave": 5, "teacher": "Оюунчимэг" },
-  { "id": "3", "subject": "Мэдээллийн сан", "present": 75, "absent": 20, "leave": 5, "teacher": "Доржсүрэн" },
-  { "id": "4", "subject": "Веб хөгжүүлэлт", "present": 85, "absent": 10, "leave": 5, "teacher": "Сарантуяа" },
-  { "id": "5", "subject": "Өгөгдлийн бүтэц ба алгоритм", "present": 70, "absent": 20, "leave": 10, "teacher": "Эрдэнэбат" },
-  { "id": "6", "subject": "Компьютерийн сүлжээ", "present": 95, "absent": 3, "leave": 2, "teacher": "Нарангэрэл" },
-  { "id": "7", "subject": "Програм хангамжийн инженерчлэл", "present": 60, "absent": 30, "leave": 10, "teacher": "Ганзориг" },
-  { "id": "8", "subject": "Операцийн систем", "present": 85, "absent": 10, "leave": 5, "teacher": "Цэцэгмаа" },
-  { "id": "9", "subject": "DevOps ба серверийн удирдлага", "present": 90, "absent": 5, "leave": 5, "teacher": "Мөнхбаяр" },
-  { "id": "10", "subject": "Хиймэл оюун ухаан", "present": 75, "absent": 15, "leave": 10, "teacher": "Уянга" }
+  { "id": "1", "subject": "Өгөгдлийн бүтэц", "type": "Лекц", "lessonNumber": 1, "present": true, "teacher": "Батаа" },
+  { "id": "2", "subject": "Өгөгдлийн бүтэц", "type": "Лаб", "lessonNumber": 1, "present": true, "teacher": "Нараа"},
+  { "id": "3", "subject": "Өгөгдлийн бүтэц", "type": "Лекц", "lessonNumber": 2, "present": false, "teacher": "Батаа" },
+  { "id": "4", "subject": "Өгөгдлийн бүтэц", "type": "Лаб", "lessonNumber": 2, "present": true, "teacher": "Нараа" },
+  { "id": "5", "subject": "Өгөгдлийн бүтэц", "type": "Лекц", "lessonNumber": 3, "present": true, "teacher": "Батаа" },
+  { "id": "6", "subject": "Өгөгдлийн бүтэц", "type": "Лаб", "lessonNumber": 3, "present": false, "teacher": "Нараа" },
+  { "id": "7", "subject": "Өгөгдлийн бүтэц", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Батаа" },
+  { "id": "8", "subject": "Өгөгдлийн бүтэц", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Нараа" },
+  { "id": "9", "subject": "Өгөгдлийн бүтэц", "type": "Лекц", "lessonNumber": 5, "present": false, "teacher": "Батаа" },
+  { "id": "10", "subject": "Өгөгдлийн бүтэц", "type": "Лаб", "lessonNumber": 5, "present": true, "teacher": "Нараа"},
+  { "id": "11", "subject": "Алгоритм", "type": "Лекц", "lessonNumber": 1, "present": true, "teacher": "Сараа" },
+  { "id": "12", "subject": "Алгоритм", "type": "Лаб", "lessonNumber": 1, "present": true, "teacher": "Ганбаатар" },
+  { "id": "13", "subject": "Алгоритм", "type": "Лекц", "lessonNumber": 2, "present": false, "teacher": "Сараа" },
+  { "id": "14", "subject": "Алгоритм", "type": "Лаб", "lessonNumber": 2, "present": true, "teacher": "Ганбаатар"},
+  { "id": "15", "subject": "Алгоритм", "type": "Лекц", "lessonNumber": 3, "present": true, "teacher": "Сараа" },
+  { "id": "16", "subject": "Алгоритм", "type": "Лаб", "lessonNumber": 3, "present": false, "teacher": "Ганбаатар" },
+  { "id": "17", "subject": "Алгоритм", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Сараа" },
+  { "id": "18", "subject": "Алгоритм", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Ганбаатар" },
+  { "id": "19", "subject": "Алгоритм", "type": "Лекц", "lessonNumber": 5, "present": false, "teacher": "Сараа" },
+  { "id": "20", "subject": "Алгоритм", "type": "Лаб", "lessonNumber": 5, "present": true, "teacher": "Ганбаатар" },
+  { "id": "21", "subject": "Объект хандалтат програмчлал", "type": "Лекц", "lessonNumber": 1, "present": true, "teacher": "Ганболд" },
+  { "id": "22", "subject": "Объект хандалтат програмчлал", "type": "Лаб", "lessonNumber": 1, "present": false, "teacher": "Цэцэг" },
+  { "id": "23", "subject": "Объект хандалтат програмчлал", "type": "Лекц", "lessonNumber": 2, "present": true, "teacher": "Ганболд" },
+  { "id": "24", "subject": "Объект хандалтат програмчлал", "type": "Лаб", "lessonNumber": 2, "present": true, "teacher": "Цэцэг"},
+  { "id": "25", "subject": "Объект хандалтат програмчлал", "type": "Лекц", "lessonNumber": 3, "present": false, "teacher": "Ганболд" },
+  { "id": "26", "subject": "Объект хандалтат програмчлал", "type": "Лаб", "lessonNumber": 3, "present": true, "teacher": "Цэцэг" },
+  { "id": "27", "subject": "Объект хандалтат програмчлал", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Ганболд" },
+  { "id": "28", "subject": "Объект хандалтат програмчлал", "type": "Лаб", "lessonNumber": 4, "present": false, "teacher": "Цэцэг" },
+  { "id": "29", "subject": "Объект хандалтат програмчлал", "type": "Лекц", "lessonNumber": 5, "present": true, "teacher": "Ганболд" },
+  { "id": "30", "subject": "Объект хандалтат програмчлал", "type": "Лаб", "lessonNumber": 5, "present": true, "teacher": "Цэцэг" },
+  { "id": "31", "subject": "Веб хөгжүүлэлт", "type": "Лекц", "lessonNumber": 1, "present": false, "teacher": "Оюун" },
+  { "id": "32", "subject": "Веб хөгжүүлэлт", "type": "Лаб", "lessonNumber": 1, "present": true, "teacher": "Мөнх" },
+  { "id": "33", "subject": "Веб хөгжүүлэлт", "type": "Лекц", "lessonNumber": 2, "present": true, "teacher": "Оюун" },
+  { "id": "34", "subject": "Веб хөгжүүлэлт", "type": "Лаб", "lessonNumber": 2, "present": false, "teacher": "Мөнх" },
+  { "id": "35", "subject": "Веб хөгжүүлэлт", "type": "Лекц", "lessonNumber": 3, "present": true, "teacher": "Оюун" },
+  { "id": "36", "subject": "Веб хөгжүүлэлт", "type": "Лаб", "lessonNumber": 3, "present": true, "teacher": "Мөнх" },
+  { "id": "37", "subject": "Веб хөгжүүлэлт", "type": "Лекц", "lessonNumber": 4, "present": false, "teacher": "Оюун" },
+  { "id": "38", "subject": "Веб хөгжүүлэлт", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Мөнх" },
+  { "id": "39", "subject": "Веб хөгжүүлэлт", "type": "Лекц", "lessonNumber": 5, "present": true, "teacher": "Оюун" },
+  { "id": "40", "subject": "Веб хөгжүүлэлт", "type": "Лаб", "lessonNumber": 5, "present": false, "teacher": "Мөнх"},
+  { "id": "41", "subject": "Мобиль програмчлал", "type": "Лекц", "lessonNumber": 1, "present": true, "teacher": "Энхээ" },
+  { "id": "42", "subject": "Мобиль програмчлал", "type": "Лаб", "lessonNumber": 1, "present": true, "teacher": "Уянга" },
+  { "id": "43", "subject": "Мобиль програмчлал", "type": "Лекц", "lessonNumber": 2, "present": true, "teacher": "Энхээ" },
+  { "id": "44", "subject": "Мобиль програмчлал", "type": "Лаб", "lessonNumber": 2, "present": false, "teacher": "Уянга" },
+  { "id": "45", "subject": "Мобиль програмчлал", "type": "Лекц", "lessonNumber": 3, "present": false, "teacher": "Энхээ" },
+  { "id": "46", "subject": "Мобиль програмчлал", "type": "Лаб", "lessonNumber": 3, "present": true, "teacher": "Уянга" },
+  { "id": "47", "subject": "Мобиль програмчлал", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Энхээ" },
+  { "id": "48", "subject": "Мобиль програмчлал", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Уянга" },
+  { "id": "49", "subject": "Мобиль програмчлал", "type": "Лекц", "lessonNumber": 5, "present": true, "teacher": "Энхээ" },
+  { "id": "50", "subject": "Мобиль програмчлал", "type": "Лаб", "lessonNumber": 5, "present": false, "teacher": "Уянга"},
+  { "id": "51", "subject": "Компьютерийн сүлжээ", "type": "Лекц", "lessonNumber": 1, "present": false, "teacher": "Нараа" },
+  { "id": "52", "subject": "Компьютерийн сүлжээ", "type": "Лаб", "lessonNumber": 1, "present": false, "teacher": "Уянга" },
+  { "id": "53", "subject": "Компьютерийн сүлжээ", "type": "Лекц", "lessonNumber": 2, "present": true, "teacher": "Нараа" },
+  { "id": "54", "subject": "Компьютерийн сүлжээ", "type": "Лаб", "lessonNumber": 2, "present": true, "teacher": "Уянга" },
+  { "id": "55", "subject": "Компьютерийн сүлжээ", "type": "Лекц", "lessonNumber": 3, "present": false, "teacher": "Нараа" },
+  { "id": "56", "subject": "Компьютерийн сүлжээ", "type": "Лаб", "lessonNumber": 3, "present": false, "teacher": "Уянга" },
+  { "id": "57", "subject": "Компьютерийн сүлжээ", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Нараа" },
+  { "id": "58", "subject": "Компьютерийн сүлжээ", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Уянга"},
+  { "id": "59", "subject": "Компьютерийн сүлжээ", "type": "Лекц", "lessonNumber": 5, "present": false, "teacher": "Нараа" },
+  { "id": "60", "subject": "Компьютерийн сүлжээ", "type": "Лаб", "lessonNumber": 5, "present": true, "teacher": "Уянга" },
+  { "id": "61", "subject": "Хиймэл оюун ухаан", "type": "Лекц", "lessonNumber": 1, "present": true, "teacher": "Уянга" },
+  { "id": "62", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 1, "present": true, "teacher": "Цэцэг" },
+  { "id": "63", "subject": "Хиймэл оюун ухаан", "type": "Лекц", "lessonNumber": 2, "present": true, "teacher": "Уянга" },
+  { "id": "64", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 2, "present": false, "teacher": "Цэцэг" },
+  { "id": "65", "subject": "Хиймэл оюун ухаан", "type": "Лекц", "lessonNumber": 3, "present": false, "teacher": "Уянга" },
+  { "id": "66", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 3, "present": true, "teacher": "Цэцэг" },
+  { "id": "67", "subject": "Хиймэл оюун ухаан", "type": "Лекц", "lessonNumber": 4, "present": true, "teacher": "Уянга" },
+  { "id": "68", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 4, "present": true, "teacher": "Цэцэг"},
+  { "id": "69", "subject": "Хиймэл оюун ухаан", "type": "Лекц", "lessonNumber": 5, "present": true, "teacher": "Уянга" },
+  { "id": "70", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 5, "present": false, "teacher": "Цэцэг" }
 ];
 
-const header = StyleSheet.create({
-  card: {
-    width: "100%",
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#822321"
+const gradesData: { [subject: string]: SubjectGrades } = { // Дүнгийн мэдээллийг объект хэлбэрээр хадгалах
+  'Өгөгдлийн бүтэц': {
+    subject: 'Өгөгдлийн бүтэц',
+    attendancePercentage: 85,
+    assignments: [
+      { id: '1', type: 'Лаборатори', title: 'Бүлэг 1', grade: 90, maxGrade: 100 },
+      { id: '2', type: 'Бие даалт', title: 'Модуль 1', grade: 85, maxGrade: 100 },
+      { id: '3', type: 'Лаборатори', title: 'Бүлэг 2', grade: 92, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '101', name: '1-р улирлын шалгалт', grade: 88, maxGrade: 100 },
+      { id: '102', name: 'Эцсийн шалгалт', grade: 95, maxGrade: 100 },
+    ],
   },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+  'Алгоритм': {
+    subject: 'Алгоритм',
+    attendancePercentage: 92,
+    assignments: [
+      { id: '4', type: 'Лаборатори', title: 'Бүлэг 1', grade: 78, maxGrade: 100 },
+      { id: '5', type: 'Бие даалт', title: 'Модуль 1', grade: 92, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '201', name: 'Эцсийн шалгалт', grade: 92, maxGrade: 100 },
+    ],
   },
-  iconText: {
-    color: "white",
-    fontSize: 18,
+  'Объект хандалтат програмчлал': {
+    subject: 'Объект хандалтат програмчлал',
+    attendancePercentage: 78,
+    assignments: [
+      { id: '6', type: 'Лаборатори', title: 'Бүлэг 1', grade: 88, maxGrade: 100 },
+      { id: '7', type: 'Бие даалт', title: 'Модуль 1', grade: 95, maxGrade: 100 },
+      { id: '8', type: 'Лаборатори', title: 'Бүлэг 2', grade: 80, maxGrade: 100 },
+      { id: '9', type: 'Бие даалт', title: 'Модуль 2', grade: 90, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '301', name: 'Явцын шалгалт', grade: 78, maxGrade: 100 },
+      { id: '302', name: 'Эцсийн шалгалт', grade: 85, maxGrade: 100 },
+    ],
   },
-  textContainer: {
-    flex: 1,
-    marginLeft: 12,
+  'Веб хөгжүүлэлт': {
+    subject: 'Веб хөгжүүлэлт',
+    attendancePercentage: 60,
+    assignments: [
+      { id: '10', type: 'Лаборатори', title: 'Бүлэг 1', grade: 65, maxGrade: 100 },
+      { id: '11', type: 'Бие даалт', title: 'Төсөл 1', grade: 75, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '401', name: 'Эцсийн шалгалт', grade: 70, maxGrade: 100 },
+    ],
   },
-  name: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+  'Мобиль програмчлал': {
+    subject: 'Мобиль програмчлал',
+    attendancePercentage: 98,
+    assignments: [
+      { id: '12', type: 'Лаборатори', title: 'Бүлэг 1', grade: 95, maxGrade: 100 },
+      { id: '13', type: 'Бие даалт', title: 'Төсөл 1', grade: 88, maxGrade: 100 },
+      { id: '14', type: 'Лаборатори', title: 'Бүлэг 2', grade: 92, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '501', name: '1-р сэдвийн шалгалт', grade: 85, maxGrade: 100 },
+      { id: '502', name: 'Эцсийн шалгалт', grade: 90, maxGrade: 100 },
+    ],
   },
-  className: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 14,
+  'Компьютерийн сүлжээ': {
+    subject: 'Компьютерийн сүлжээ',
+    attendancePercentage: 70,
+    assignments: [
+      { id: '15', type: 'Лаборатори', title: 'Сүлжээний үндэс', grade: 80, maxGrade: 100 },
+      { id: '16', type: 'Бие даалт', title: 'Сүлжээний төсөл', grade: 70, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '601', name: 'Эцсийн шалгалт', grade: 75, maxGrade: 100 },
+    ],
   },
-  imageWrapper: {
-    position: "relative",
+  'Хиймэл оюун ухаан': {
+    subject: 'Хиймэл оюун ухаан',
+    attendancePercentage: 88,
+    assignments: [
+      { id: '17', type: 'Лаборатори', title: 'Нейрон сүлжээ', grade: 95, maxGrade: 100 },
+      { id: '18', type: 'Бие даалт', title: 'Машин сургалт', grade: 85, maxGrade: 100 },
+    ],
+    exams: [
+      { id: '701', name: 'Эцсийн шалгалт', grade: 90, maxGrade: 100 },
+    ],
   },
-  profileImage: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: "white",
-  }
-});
+};
 
 export default function Home() {
-    const [homework, setHomework] = useState<Attendance[]>(attendanceData);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedHomework, setSelectedHomework] = useState<Attendance | null>(null);
+  const [homework] = useState<Attendance[]>(attendanceData);
 
-    const handleHomeworkPress = (item: Attendance) => {
-      setSelectedHomework(item);
-      setModalVisible(true);
-    };
-
-    const closeModal = () => {
-      setModalVisible(false);
-      setSelectedHomework(null);
-    };
-
-    return (
+  return (
     <View style={styles.container}>
-      <ProfileCard/>
-      <Text style={styles.sectionTitle}>Мэдэгдэл</Text>
-      <View style={styles.innerContainer}>
-      <FlatList
-        style={{
-            minHeight:180
-        }}
-        horizontal
-        data={notices}
-        keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.noticeCard}>
-            {item.image ? (
-              <Image source={{ uri: item.image }} style={styles.noticeImage} />
-            ) : (
-              <View style={[styles.noticeImage, { backgroundColor: 'lightgray' }]} />
-            )}
-            <Text style={styles.noticeTitle}>{item.title}</Text>
-            <Text style={styles.noticeDate}>{item.date}</Text>
-          </View>
-        )}
-      />
-      <Link href={'/menu'} style={{margin:10}}><Text style={styles.sectionTitle}>Ирцийн мэдээлэл</Text></Link>
-
-      <FlatList
-        data={homework}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.homeworkCard} onPress={() => handleHomeworkPress(item)}>
-            <View style={styles.homeworkTextContainer}>
-              <View style={{flex:1, flexDirection:'row',justifyContent:'space-between',alignItems:'center', width:280}}>
-                <Text style={[styles.homeworkText]}>{item.subject}</Text>
-                <Text>{item.teacher}</Text>
-              </View>
-              <View style={{flex:1, flexDirection:'row',gap:10,alignItems:'center', width:280}}>
-                <Text>Ирц</Text>
-                <View style={{ width: 200, height: 10, backgroundColor: "#ddd", borderRadius: 5,flex:1,flexDirection:"row",overflow:'hidden' }}>
-                  <View style={{ width: `${item.present}%`, height: "100%", backgroundColor: "#00ce90"}} />
-                  <View style={{ width: `${item.leave}%`, height: "100%", backgroundColor: "#d4f5ff"}} />
-                  <View style={{ width: `${item.absent}%`, height: "100%", backgroundColor: "#fe4f66"}} />
-                </View>
-              </View>
-
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={modalStyles.centeredView}>
-          <View style={modalStyles.modalView}>
-            {selectedHomework && (
-              <>
-                <Text style={modalStyles.modalTitle}>{selectedHomework.subject}</Text>
-                <Text style={modalStyles.modalText}>Багш: {selectedHomework.teacher}</Text>
-                <Text style={modalStyles.modalText}>Ирсэн: {selectedHomework.present}%</Text>
-                <Text style={modalStyles.modalText}>Чөлөөтэй: {selectedHomework.leave}%</Text>
-                <Text style={modalStyles.modalText}>Тасалсан: {selectedHomework.absent}%</Text>
-              </>
-            )}
-            <TouchableOpacity
-              style={[modalStyles.button, modalStyles.buttonClose]}
-              onPress={closeModal}
-            >
-              <Text style={modalStyles.textStyle}>Хаах</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
+      <ProfileCard />
+      <NoticeBoard />
+      <AttendanceList  attendanceData={attendanceData} gradeData={gradesData} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "white"},
-    innerContainer:{ flex: 1, padding:16},
-    sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#822321", margin: 8 },
-
-    // Notice Board Styles
-    noticeCard: { backgroundColor: "#F5F5F5", padding: 12, borderRadius: 10, marginRight: 10, width: 160 },
-    noticeImage: { width: "100%", height: 80, alignSelf: "center", borderRadius: 8 },
-    noticeTitle: { fontSize: 14, fontWeight: "600", marginTop: 6 },
-    noticeDate: { fontSize: 12, color: "gray", marginTop: 2 },
-
-    // Homework Styles
-    homeworkCard: { flexDirection: "row", alignItems: "center", backgroundColor: "#F3F4F6", padding: 12, borderRadius: 10, marginBottom: 8 },
-    homeworkTextContainer: { marginLeft: 12 },
-    homeworkText: { fontSize: 14, fontWeight: "600" },
-    completedHomework: { color: "#822321" },
-    subjectDate: { fontSize: 12, color: "gray" },
-  });
-
-const modalStyles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "flex-start",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: "80%",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 15,
-    textAlign: "center",
-    width: "100%"
-  },
-  modalText: {
-    marginBottom: 10
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
-  buttonClose: {
-    backgroundColor: "#822321",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  }
+  container: { flex: 1, backgroundColor: "white", paddingTop: 20 },
 });

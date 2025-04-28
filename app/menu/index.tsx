@@ -70,7 +70,7 @@ const MenuScreen = () => {
       />
 
       <Link href={'/'} style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Logout</Text>
+        <Text style={styles.logoutText}>Гарах</Text>
       </Link>
     </View>
   );

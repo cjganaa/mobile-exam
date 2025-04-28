@@ -17,7 +17,7 @@ export function ProfileCard(props: any) {
       </View>
       <View style={styles.imageWrapper}>
         <Image
-          source={require('../../../assets/images/profile.jpg')} // Replace with actual image URL
+          source={require('../../../assets/images/profile.jpg')}
           style={styles.profileImage}
         />
       </View>

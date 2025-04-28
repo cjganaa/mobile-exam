@@ -1,4 +1,3 @@
-// app/index.tsx
 import { View, StyleSheet } from 'react-native';
 import React, { useState } from "react";
 import { ProfileCard } from './components/ProfileCard';
@@ -19,7 +18,7 @@ interface Exam {
   maxGrade: number;
 }
 
-export interface SubjectGrades { // Export хийх
+export interface SubjectGrades {
   subject: string;
   attendancePercentage: number;
   assignments: Assignment[];
@@ -30,7 +29,7 @@ export interface Attendance {
   id: string;
   subject: string;
   type: 'Лекц' | 'Лаб';
-  lessonNumber: number; // Нэмэлт талбар
+  lessonNumber: number;
   present: boolean;
   teacher: string;
 }
@@ -108,7 +107,7 @@ const attendanceData: Attendance[] = [
   { "id": "70", "subject": "Хиймэл оюун ухаан", "type": "Лаб", "lessonNumber": 5, "present": false, "teacher": "Цэцэг" }
 ];
 
-const gradesData: { [subject: string]: SubjectGrades } = { // Дүнгийн мэдээллийг объект хэлбэрээр хадгалах
+const gradesData: { [subject: string]: SubjectGrades } = {
   'Өгөгдлийн бүтэц': {
     subject: 'Өгөгдлийн бүтэц',
     attendancePercentage: 85,

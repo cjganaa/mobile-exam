@@ -1,4 +1,3 @@
-// components/NoticeBoard.tsx
 import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
 import React from 'react';
 
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
   innerContainer: { paddingHorizontal: 16 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#822321", marginBottom: 8, marginTop: 16, marginLeft:20 },
 
-  // Notice Board Styles
   noticeCard: { backgroundColor: "#F5F5F5", padding: 12, borderRadius: 10, marginRight: 10, width: 160 },
   noticeImage: { width: "100%", height: 80, alignSelf: "center", borderRadius: 8 },
   noticeTitle: { fontSize: 14, fontWeight: "600", marginTop: 6 },

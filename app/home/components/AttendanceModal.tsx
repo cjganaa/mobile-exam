@@ -1,4 +1,3 @@
-// components/AttendanceModal.tsx
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { Attendance } from '../index';
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: "flex-start", // Энэ хэвээрээ байна
+    alignItems: "flex-start",  
     shadowColor: "#000",
     gap: 5,
     shadowOffset: {
@@ -96,8 +95,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
-    flexDirection: 'column', // Гол өөрчлөлт
-    justifyContent: 'space-between', // Контейнерын дотор зайг хуваарилна
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   modalTitle: {
     fontSize: 20,

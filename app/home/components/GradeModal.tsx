@@ -1,7 +1,6 @@
-// components/GradeModal.tsx
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { SubjectGrades } from '../index'; // app/index.tsx-ээс SubjectGrades төрлийг импортлох
+import { SubjectGrades } from '../index';
 
 interface AssignmentItemProps {
   item: SubjectGrades['assignments'][0];
@@ -27,7 +26,7 @@ const ExamItem: React.FC<ExamItemProps> = ({ item }) => (
 
 interface Props {
   modalVisible: boolean;
-  selectedSubjectData: SubjectGrades | null; // selectedGrade -> selectedSubjectData, төрөл нь SubjectGrades
+  selectedSubjectData: SubjectGrades | null;
   closeModal: () => void;
 }
 
